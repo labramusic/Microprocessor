@@ -1,0 +1,32 @@
+				load r1, @input
+				load r2, @incorrect
+				load r3, @message
+				load r4, @newline
+
+@loop:			echo r1
+				iinput @integer
+				jumpIfTrue @continue
+				echo r2
+				jump @loop
+
+@continue:		echo r3
+				move r0, 0	
+				load r1, @integer		; store integer in r1
+				move r2, 5				; store counter in r2
+@print:			increment r1			; increment number
+				echo r4
+				echo r1
+				decrement r2			; decrement counter
+				testEquals r2, r0		; if counter equals 0
+				jumpIfTrue @break
+				jump @print
+
+@break:			halt
+
+
+@integer:		DEFINT 0
+
+@newline:		DEFSTR "\n"
+@input:			DEFSTR "Unesite početni broj: "
+@incorrect:		DEFSTR "Unos nije moguće protumačiti kao cijeli broj.\n"
+@message:		DEFSTR "Sljedećih 5 brojeva je:"

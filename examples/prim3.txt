@@ -1,0 +1,70 @@
+# Program which contains a subroutine for calculating
+# the n-th number in the fibonacci sequence, n>=1.
+# The program asks the user to input the integer n.
+# It is assumed that the user will input a number between 0 and 6.
+
+				load r0, @input
+				echo r0					; print message
+				iinput @number
+				load r0, @number		; store number in r1
+				push r0					; push number on stack
+				call @fib
+				increment r15			; remove n from stack
+				echo r0					; print result
+				halt
+				
+@fib:			push r1
+				push r2
+				
+				move r7, -2
+				add r15, r15, r7		; creating local variables
+				
+				move r0, 1				; prepare result in case of return
+				
+				move r1, [r15+6]		; load n
+				move r7, 1
+				testEquals r1, r7		; n==1 ?
+				jumpIfTrue @return
+				
+				move r7, 2
+				testEquals r1, r7		; n==2 ?
+				jumpIfTrue @return
+				
+				move r1, [r15+6]		; load n
+				move r7, -1
+				add r1, r1, r7
+				push r1
+				
+				call @fib				; call fib(n-1)
+				increment r15			; remove n-1 from stack
+				move [r15+2], r0		; store x=fib(n-1)
+				
+				move r1, [r15+6]		; load n
+				move r7, -2
+				add r1, r1, r7
+				push r1
+				
+				call @fib				; call fib(n-2)
+				increment r15			; remove n-2 from stack
+				move [r15+1], r0		; store y=fib(n-2)
+				
+				move r1, [r15+2]		; get x
+				move r2, [r15+1]		; get y
+				add r0, r1, r2			; calculate result
+
+@return:		move r7, 2
+				add r15, r15, r7		; remove x and y from stack
+				
+				pop r2
+				pop r1
+				
+				ret
+
+
+
+@number:		DEFINT 0
+
+@input:			DEFSTR "Unesite broj n: "
+
+				RESERVE:29
+@stackTop:		RESERVE
